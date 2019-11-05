@@ -5,14 +5,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class MoneyCalculator {
-    
+    private HashMap<String, Currency> currencies = new HashMap<String,Currency>();
     private double amount;
     private double exchangeRate;
-    String currencyFrom;
-    String currencyTo;
+    Currency currencyFrom;
+    Currency currencyTo;
+
+    public MoneyCalculator() { 
+        currencies.put("USD", new Currency("USD","Dolar","$"));
+        currencies.put("EUR", new Currency("EUR","Euro","€"));        
+    }
     
     public static void main(String[] args) throws IOException {
         MoneyCalculator moneyCalculator = new MoneyCalculator();
@@ -31,18 +37,18 @@ public class MoneyCalculator {
         amount = Double.parseDouble(scanner.next());
     
         System.out.println("Introduzca una divisa origen");
-        currencyFrom = scanner.next();
+        currencyFrom = currencies.get(scanner.next().toUpperCase());
         
         System.out.println("Introduzca una divisa destino");
-        currencyTo = scanner.next();
+        currencyTo = currencies.get(scanner.next().toUpperCase());
     }
     
     private void process() throws IOException {
-        exchangeRate = getExchangeRate(currencyFrom,currencyTo);
+        exchangeRate = getExchangeRate(currencyFrom.getIsoCode(),currencyTo.getIsoCode());
     }
     
     private void output() {
-        System.out.println(amount + " " + currencyFrom + " equivale a " + amount*exchangeRate + currencyTo);
+        System.out.println(amount + " " + currencyFrom.getSymbol() + " equivale a " + amount*exchangeRate + currencyTo.getSymbol());
     }
     
     private static double getExchangeRate(String from, String to) throws IOException {
