@@ -12,14 +12,13 @@ import java.util.Scanner;
 import java.time.LocalDate;
 
 public class MoneyCalculator {
-    private HashMap<String, Currency> currencies = new HashMap<String,Currency>();
+    private CurrencyList currencyList;
     private ExchangeRate exchangeRate;
     private Currency currencyTo;
     private Money money;
 
     public MoneyCalculator() { 
-        currencies.put("USD", new Currency("USD","Dolar","$"));
-        currencies.put("EUR", new Currency("EUR","Euro","€"));        
+        currencyList = new CurrencyList();
     }
     
     public static void main(String[] args) throws IOException {
@@ -38,13 +37,20 @@ public class MoneyCalculator {
         Scanner scanner = new Scanner(System.in);
         double amount = Double.parseDouble(scanner.next());
     
-        System.out.println("Introduzca una divisa origen");
-        Currency currency = currencies.get(scanner.next().toUpperCase());
-        
-        money = new Money(amount,currency);
-        
-        System.out.println("Introduzca una divisa destino");
-        currencyTo = currencies.get(scanner.next().toUpperCase());
+        while (true) {
+            System.out.println("Introduzca código divisa origen");
+            Currency currency = currencyList.get(scanner.next());
+            money = new Money(amount, currency);
+            if (currency != null) break;
+            System.out.println("Divisa no conocida");
+        }
+
+        while (true) {
+            System.out.println("Introduzca codigo divisa destino");
+            currencyTo = currencyList.get(scanner.next());
+            if (currencyTo != null) break;
+            System.out.println("Divisa no conocida");
+        }
     }
     
     private void process() throws IOException {
